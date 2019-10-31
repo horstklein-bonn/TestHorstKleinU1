@@ -2,6 +2,8 @@
     <wb-module deploy-name="HorstKleinU1">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
         <property name="context-root" value="HorstKleinU1"/>
         <property name="java-output-path" value="/HorstKleinU1/build/classes"/>
     </wb-module>

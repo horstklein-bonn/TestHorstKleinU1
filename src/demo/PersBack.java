@@ -4,8 +4,7 @@ package demo;
 
 import java.io.Serializable;
 
-
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +22,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.ArrayDataModel;
+import javax.faces.model.DataModel;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -36,11 +37,12 @@ import demo.PersEntity;
 
  
 @ManagedBean
-@SessionScoped
+@ViewScoped
 
 public class PersBack implements Serializable {
  
-  
+	
+
 
 	 @EJB
 	 private PersRepository persRepository;
@@ -50,13 +52,14 @@ public class PersBack implements Serializable {
   @Produces
   private List<PersEntity> members;
   @NotNull
-  
-  
+ 
   private String nachname;
   private String vorname;
   private String plz;
   private String ort;
   private String strasse;
+  public PersEntity selectedrow;
+  
  
   public String getNachname() {
 	return nachname;
@@ -100,9 +103,14 @@ public String getOrt() {
   
   public void retrieveAllMembersOrderedByName() {
       this.members = persRepository.findAllOrderedByName();
+      System.out.println("in retere");
        
   }
-  
+  public void retrieveAllMembersOrderedByVorName() {
+      this.members = persRepository.findAllOrderedByVorName();
+      System.out.println("in retere");
+       
+  }
   
   public List<PersEntity> getMembers() {
 		return members;
@@ -110,43 +118,69 @@ public String getOrt() {
 
 	public void setMembers(List<PersEntity> members) {
 		this.members = members;
+		
 	}
 
-public PersBack() {
-  }
+
       
 public String submit() {
-    String redirect = "/error?faces-redirect=true";
- 
-    String template = "Nachname: {0}, Vorname: {1}, PLZ:{2},Ort: {3}, Strasse{4}";
-    Object[] values = new Object[]{
-      this.nachname,
-      this.vorname,
-      this.plz,
-      this.ort,
-      this.strasse
-    };
-    LOGGER.log(Level.INFO, template, values);
+  
  
     boolean isValid = validate();
     if (isValid) {
-      PersEntity entity = new PersEntity(nachname,vorname,plz,ort,strasse);
-      persRepository.save(entity);
-      LOGGER.log(Level.INFO, "Saved user.");
-      retrieveAllMembersOrderedByName();
-      redirect = "/success?faces-redirect=true";
+      PersEntity entitypers = new PersEntity(nachname,vorname);
+      AdrEntity entityadr = new AdrEntity(plz,ort,strasse);
       
+      entitypers.getAdr().add(entityadr);
+      entityadr.setPerson(entitypers);
+     
+      persRepository.save(entitypers);
+           
+      retrieveAllMembersOrderedByName();
+               
     }
- 
-    return redirect;
+      return "/success?faces-redirect=true";
+   
   }
  
   public boolean validate() {
     //*return nachname.length() > 1 && vorname.length() > 1 && plz.length() > 1 && ort.length() > 1 && strasse.length() > 1;
 	  return true;
   } 
-    public String getString() {
-    	return "Hie12r";
+    public void LoadPerson() {
+    	
+    	List<PersEntity> l = new ArrayList<>();
+    	
+    	l.add(persRepository.findById(this.selectedrow.getId()));
+    	PersEntity  name =(PersEntity) l.get(0);
+    	this.setNachname(name.getNachname());
+    	this.setVorname(name.getVorname());
+    
+    	System.out.println("in Persback LoadPerson");
+    	this.setOrt(l.get(0).getAdr().get(0).getOrt());
+    	for(final AdrEntity adr: name.getAdr()) {
+    		this.setStrasse(adr.getStrasse());
+    		this.setPlz(adr.getPlz());
+    		this.setOrt(adr.getOrt());
+    		
+    	}
     }
-  }
+ public void deletePerson() {
+    	
+    	List<PersEntity> l = new ArrayList<>();
+    	
+    	l.add(persRepository.findById(this.selectedrow.getId()));
+    	persRepository.deleteById(l.get(0));
+    }
 
+	public PersEntity getSelectedrow() {
+		return selectedrow;
+	}
+
+	public void setSelectedrow(PersEntity selectedrow) {
+		this.selectedrow = selectedrow;
+	}
+    	
+    	
+    
+  }

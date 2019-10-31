@@ -3,16 +3,17 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:rich="http://richfaces.org/rich"> 
+      xmlns:rich="http://richfaces.org/rich"
+       xmlns:p="http://primefaces.org/ui"> 
 
   
      
 
 <h:head></h:head> 
 <body> 
-<h:form>
+<h:form id = "form">
     <rich:panel>
-      <h2>Text example</h2>
+      <h2>Personenstammdaten</h2>
       <h:panelGrid columns="3" columnClasses="titleCell">
                 <h:outputLabel for="nachname" value="Nachname:" />
                 <h:inputText id="nachname" value="#{persBack.nachname}" />
@@ -35,6 +36,7 @@
                 <h:inputText id="strasse"
                     value="#{persBack.strasse}" />
                 <h:message for="strasse" errorClass="invalid" />
+                
       </h:panelGrid>
       
       <p>
@@ -46,7 +48,9 @@
                         errorClass="invalid" infoClass="valid"
                         warnClass="warning" globalOnly="true" />
                       <h:commandButton id="list" action="#{persBack.retrieveAllMembersOrderedByName}"
-                        value="Liste erzeugen" styleClass="register" />
+                        value="Liste nach Nachname sortiert" styleClass="register" />
+                      <h:commandButton id="list1" action="#{persBack.retrieveAllMembersOrderedByVorName}"
+                        value="Liste nach Vorname sortiert" styleClass="register" />
                     <h:messages styleClass="messages"
                         errorClass="invalid" infoClass="valid"
                         warnClass="warning" globalOnly="true" />
@@ -72,31 +76,68 @@
                 <f:facet name="header">Vorname</f:facet>
                 #{_member.vorname}
             </h:column>
-            <h:column>
-                <f:facet name="header">PLZ</f:facet>
-                #{_member.plz}
+            
+      		 <h:column>
+       			<f:facet name="header">PLZ</f:facet>
+      		 </h:column>
+       		<h:column>
+        		 <f:facet name="header">Ort</f:facet>
+      		 </h:column>         
+       		<h:column>
+       			<f:facet name="header">Strasse</f:facet>
+            </h:column>
+            
+ 		<h:column>
+  <h:dataTable var="_memberadr" value="#{_member.adr}"
+            rendered="true"
+            styleClass="simpletablestyle">
+ 
+          <h:column>
+                #{_memberadr.plz}
+              
             </h:column>
             <h:column>
-                <f:facet name="header">Ort</f:facet>
-                #{_member.ort}
+                
+                #{_memberadr.ort}
             </h:column>
             <h:column>
-                <f:facet name="header">Strasse</f:facet>
-                #{_member.strasse}
+              
+                #{_memberadr.strasse}
             </h:column>
             <h:column>
+            <h:commandButton id="aendern"   action="#{persBack.LoadPerson}" value="ändern" styleClass="register"  rendered = 'true' actionListener="#{persBack.setSelectedrow(_member)}"/>
+            
+           <!--<f:setPropertyActionListener value="#{persBack}"    	target="#{PersBack.selectedrow}" /> -->
+            
+            <f:param name = "action" value = "#{persBack.LoadPerson}"/>
+             <h:messages styleClass="messages"
+                        errorClass="invalid" infoClass="valid"
+                        warnClass="warning" globalOnly="true" />
+            </h:column>
+            <h:column>
+            <h:commandButton id="löschen"   action="#{persBack.deletePerson}" value="löschen" styleClass="register"  rendered = 'true' actionListener="#{persBack.setSelectedrow(_member)}"/>
+            
+           <!--<f:setPropertyActionListener value="#{persBack}"    	target="#{PersBack.selectedrow}" /> -->
+            
+            <f:param name = "action" value = "#{persBack.deletePerson}"/>
+             <h:messages styleClass="messages"
+                        errorClass="invalid" infoClass="valid"
+                        warnClass="warning" globalOnly="true" />
+            </h:column>
+ </h:dataTable>
+  </h:column>
+            
+            <!-- <h:column>
                 <f:facet name="header">REST URL</f:facet>
                 <a
-                    href="#{request.contextPath}/person/person/#{_member.id}">/person/person/#{_member.id}</a>
+                    href="#{request.contextPath}/rest/members/#{_member.id}">/person/person/#{_member.id}</a>
             </h:column>
             <f:facet name="footer">
             REST URL for all members: <a
-                    href="#{request.contextPath}/person/person">/person/person</a>
-            </f:facet>
+                    href="#{request.contextPath}/rest/members">/person/person</a>
+            </f:facet> -->
         </h:dataTable>
         
-      
-      
       
         </rich:panel>
         </h:form>
