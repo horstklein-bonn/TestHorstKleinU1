@@ -27,6 +27,8 @@ public class AdrEntity implements Serializable {
 	private static final long serialVersionUID = 3265182927305409683L;
 
  
+	
+	
 
 @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
