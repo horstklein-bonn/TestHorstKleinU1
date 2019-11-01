@@ -168,6 +168,7 @@ public String submit() {
     
  public void deletePerson() {
     	
+	 
     	List<PersEntity> l = new ArrayList<>();
     	
     	l.add(persRepository.findById(this.selectedrow.getId()));
