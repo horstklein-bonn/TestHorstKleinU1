@@ -6,11 +6,12 @@
       xmlns:rich="http://richfaces.org/rich"
        xmlns:p="http://primefaces.org/ui"> 
 
-  
-     
+       
 
 <h:head></h:head> 
 <body> 
+<h:outputStylesheet library="css" name="style.css"  />
+
 <h:form id = "form">
     <rich:panel>
       <h2>Personenadressdaten </h2>
@@ -40,7 +41,7 @@
       </h:panelGrid>
       
       <p>
-                <h:panelGrid columns="3">
+                <h:panelGrid columns="3" id="pg">
                     <h:commandButton id="register"
                         action="#{persBack.submit}"
                         value="speichern" styleClass="register" />
@@ -50,17 +51,19 @@
                       <h:commandButton id="list" action="#{persBack.retrieveAllMembersOrderedByName}"
                         value="Liste nach Nachname sortiert" styleClass="register" />
                       <h:commandButton id="list1" action="#{persBack.retrieveAllMembersOrderedByVorName}"
-                        value="Liste nach Vorname sortiert" styleClass="register" />
+                        value="Liste nach Vorname sortiert" styleClass="register">
+                        <f:ajax render="dt"  ></f:ajax>
+                        </h:commandButton>
                     <h:messages styleClass="messages"
                         errorClass="invalid" infoClass="valid"
                         warnClass="warning" globalOnly="true" />
-                      
+                         
                 </h:panelGrid>
             </p>
       
       <h3>Personenliste</h3>
         
-        <h:dataTable var="_member" value="#{persBack.members}"
+        <h:dataTable id="dt" var="_member" value="#{persBack.members}"
             rendered="true"
             styleClass="simpletablestyle">
             <h:column>
